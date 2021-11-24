@@ -3,9 +3,9 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 
 use anyhow::{ensure, Context, Result};
-use bellperson::bls::{Bls12, Fr};
 use bellperson::groth16;
 use bincode::{deserialize, serialize};
+use blstrs::{Bls12, Scalar as Fr};
 use filecoin_hashers::{Domain, Hasher};
 use log::{info, trace};
 use memmap::MmapOptions;
@@ -128,7 +128,11 @@ where
         _,
     >>::setup(&compound_setup_params)?;
 
+<<<<<<< HEAD
     info!("building merkle tree for the original data, sector {:?}", sector_id);
+=======
+    trace!("building merkle tree for the original data");
+>>>>>>> origin/master
     let (config, comm_d) = measure_op(Operation::CommD, || -> Result<_> {
         let base_tree_size = get_base_tree_size::<DefaultBinaryTree>(porep_config.sector_size)?;
         let base_tree_leafs = get_base_tree_leafs::<DefaultBinaryTree>(base_tree_size)?;
@@ -487,7 +491,7 @@ pub fn seal_commit_phase2<Tree: 'static + MerkleTreeTrait>(
 
     let groth_params = get_stacked_params::<Tree>(porep_config)?;
 
-    info!(
+    trace!(
         "got groth params ({}) while sealing",
         u64::from(PaddedBytesAmount::from(porep_config))
     );
@@ -508,7 +512,7 @@ pub fn seal_commit_phase2<Tree: 'static + MerkleTreeTrait>(
         _,
     >>::setup(&compound_setup_params)?;
 
-    info!("snark_proof:start");
+    trace!("snark_proof:start");
     let groth_proofs = StackedCompound::<Tree, DefaultPieceHasher>::circuit_proofs(
         &public_inputs,
         vanilla_proofs,
@@ -516,7 +520,7 @@ pub fn seal_commit_phase2<Tree: 'static + MerkleTreeTrait>(
         &groth_params,
         compound_public_params.priority,
     )?;
-    info!("snark_proof:finish");
+    trace!("snark_proof:finish");
 
     let proof = MultiProof::new(groth_proofs, &groth_params.pvk);
 
@@ -571,7 +575,7 @@ pub fn get_seal_inputs<Tree: 'static + MerkleTreeTrait>(
     ticket: Ticket,
     seed: Ticket,
 ) -> Result<Vec<Vec<Fr>>> {
-    info!("get_seal_inputs:start");
+    trace!("get_seal_inputs:start");
 
     ensure!(comm_d != [0; 32], "Invalid all zero commitment (comm_d)");
     ensure!(comm_r != [0; 32], "Invalid all zero commitment (comm_r)");
@@ -630,7 +634,7 @@ pub fn get_seal_inputs<Tree: 'static + MerkleTreeTrait>(
         })
         .collect::<Result<_>>()?;
 
-    info!("get_seal_inputs:finish");
+    trace!("get_seal_inputs:finish");
 
     Ok(inputs)
 }
@@ -873,7 +877,7 @@ pub fn verify_aggregate_seal_commit_proofs<Tree: 'static + MerkleTreeTrait>(
         hasher.finalize().into()
     };
 
-    info!("start verifying aggregate proof");
+    trace!("start verifying aggregate proof");
     let result = StackedCompound::<Tree, DefaultPieceHasher>::verify_aggregate_proofs(
         &srs_verifier_key,
         &verifying_key,
@@ -881,7 +885,7 @@ pub fn verify_aggregate_seal_commit_proofs<Tree: 'static + MerkleTreeTrait>(
         commit_inputs.as_slice(),
         &aggregate_proof,
     )?;
-    info!("end verifying aggregate proof");
+    trace!("end verifying aggregate proof");
 
     info!("verify_aggregate_seal_commit_proofs:finish");
 
@@ -895,11 +899,11 @@ pub fn verify_aggregate_seal_commit_proofs<Tree: 'static + MerkleTreeTrait>(
 /// * `porep_config` - this sector's porep config that contains the number of bytes in the sector.
 /// * `piece_infos` - the piece info (commitment and byte length) for each piece in this sector.
 pub fn compute_comm_d(sector_size: SectorSize, piece_infos: &[PieceInfo]) -> Result<Commitment> {
-    info!("compute_comm_d:start");
+    trace!("compute_comm_d:start");
 
     let result = pieces::compute_comm_d(sector_size, piece_infos);
 
-    info!("compute_comm_d:finish");
+    trace!("compute_comm_d:finish");
     result
 }
 
@@ -927,8 +931,10 @@ pub fn verify_seal<Tree: 'static + MerkleTreeTrait>(
     proof_vec: &[u8],
 ) -> Result<bool> {
     info!("verify_seal:start: {:?}", sector_id);
+
     ensure!(comm_d_in != [0; 32], "Invalid all zero commitment (comm_d)");
     ensure!(comm_r_in != [0; 32], "Invalid all zero commitment (comm_r)");
+    ensure!(!proof_vec.is_empty(), "Invalid proof bytes (empty vector)");
 
     let comm_r: <Tree::Hasher as Hasher>::Domain = as_safe_commitment(&comm_r_in, "comm_r")?;
     let comm_d: DefaultPieceDomain = as_safe_commitment(&comm_d_in, "comm_d")?;
@@ -969,7 +975,7 @@ pub fn verify_seal<Tree: 'static + MerkleTreeTrait>(
         let sector_bytes = PaddedBytesAmount::from(porep_config);
         let verifying_key = get_stacked_verifying_key::<Tree>(porep_config)?;
 
-        info!(
+        trace!(
             "got verifying key ({}) while verifying seal",
             u64::from(sector_bytes)
         );
@@ -1044,11 +1050,14 @@ pub fn verify_batch_seal<Tree: 'static + MerkleTreeTrait>(
             "Invalid all zero commitment (comm_r)"
         );
     }
+    for proofs in proof_vecs {
+        ensure!(!proofs.is_empty(), "Invalid proof (empty bytes) found");
+    }
 
     let sector_bytes = PaddedBytesAmount::from(porep_config);
 
     let verifying_key = get_stacked_verifying_key::<Tree>(porep_config)?;
-    info!(
+    trace!(
         "got verifying key ({}) while verifying seal",
         u64::from(sector_bytes)
     );

@@ -529,13 +529,22 @@ pub fn run_window_post_bench<Tree: 'static + MerkleTreeTrait>(
 
     let proof = &gen_window_post_measurement.return_value;
 
+    // warmup cache
+    verify_window_post::<Tree>(
+        &post_config,
+        &RANDOMNESS,
+        &pub_replica_info,
+        PROVER_ID,
+        proof,
+    )
+    .unwrap();
     let verify_window_post_measurement = measure(|| {
         verify_window_post::<Tree>(
             &post_config,
             &RANDOMNESS,
             &pub_replica_info,
             PROVER_ID,
-            &proof,
+            proof,
         )
     })
     .expect("failed to verify window post proof");

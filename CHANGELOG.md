@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://book.async.rs/overview
 
 ## Unreleased
 
+## [10.1.0] - 2021-10-25
+
+- Allow window post proving on a single partition basis [#1526](https://github.com/filecoin-project/rust-fil-proofs/pull/1526)
+- Update bellperson, neptune, and rust-toolchain [#1529](https://github.com/filecoin-project/rust-fil-proofs/pull/1529)
+- Reduce verbose info logging [#1530](https://github.com/filecoin-project/rust-fil-proofs/pull/1530)
+- Improve benchy by printing help when no command is given [#1527](https://github.com/filecoin-project/rust-fil-proofs/pull/1527)
+- Fall back to CPU if GPU is not available [#1517](https://github.com/filecoin-project/rust-fil-proofs/pull/1517)
+- remove FIL_PROOFS_CUDA_NVCC_ARGS env var [#1520](https://github.com/filecoin-project/rust-fil-proofs/pull/1520)
+- Split GPU Tree builder CI jobs [#1518](https://github.com/filecoin-project/rust-fil-proofs/pull/1518)
+- Use GPU Tree builder only for Poseidon hashes [#1515](https://github.com/filecoin-project/rust-fil-proofs/pull/1515)
+- Run GPU Tree building tests on all CI tests [#1514](https://github.com/filecoin-project/rust-fil-proofs/pull/1514)
+
+## [10.0.0] - 2021-09-30
+
+- Integrate a variety of zk-SNARK proving related performance improvements. For details see [#220](https://github.com/filecoin-project/bellperson#220)
+- Properly implement and document the CUDA feature [#1507](https://github.com/filecoin-project/rust-fil-proofs/pull/1507)
+- Remove pairing dependency for circuit [#1509](https://github.com/filecoin-project/rust-fil-proofs/pull/1509)
+- Warm up cache for window post verify bench [#1508](https://github.com/filecoin-project/rust-fil-proofs/pull/1508)
+- Upgrade to dependencies supporting CUDA [#1504](https://github.com/filecoin-project/rust-fil-proofs/pull/1504)
+- Use upstream group, ff and pairing dependencies [#1488](https://github.com/filecoin-project/rust-fil-proofs/pull/1488)
+
+## [9.0.2] - 2021-09-07
+
+- Use sync channels in PC2 [#1500](https://github.com/filecoin-project/rust-fil-proofs/pull/1500)
+- Return error verifiying empty proof bytes [#1498](https://github.com/filecoin-project/rust-fil-proofs/pull/1498)
+- Serialize parent's cache generation and access [#1496](https://github.com/filecoin-project/rust-fil-proofs/pull/1496)
+
+## [9.0.1] - 2021-08-16
+
+- Flush mutable mmap after data updates [#1493](https://github.com/filecoin-project/rust-fil-proofs/pull/1493)
+- Revert usage of bitmask in multicore sdr [#1492](https://github.com/filecoin-project/rust-fil-proofs/pull/1492)
+
+## [9.0.0] - 2021-08-12
+
+- Correct usage of bitmask in multicore sdr (authored by @qy3u) [#1477](https://github.com/filecoin-project/rust-fil-proofs/pull/1477)
+- Switch to yastl threadpool from rayon [#1483](https://github.com/filecoin-project/rust-fil-proofs/pull/1483)
+- Swap out default bls-381 backend from pairing to blst [#1482](https://github.com/filecoin-project/rust-fil-proofs/pull/1482)
+- Improve multicore sdr logging [#1485](https://github.com/filecoin-project/rust-fil-proofs/pull/1485)
+
 ## [8.0.3] - 2021-07-26
 
 - Avoid duplicate generation of srs key caches [#1481](https://github.com/filecoin-project/rust-fil-proofs/pull/1481)
@@ -251,7 +290,12 @@ and this project adheres to [Semantic Versioning](https://book.async.rs/overview
 
 - Initial stable release
 
-[Unreleased]: https://github.com/filecoin-project/rust-fil-proofs/compare/v8.0.3...HEAD
+[Unreleased]: https://github.com/filecoin-project/rust-fil-proofs/compare/v10.1.0...HEAD
+[10.1.0]: https://github.com/filecoin-project/rust-fil-proofs/tree/releases/v10.1.0
+[10.0.0]: https://github.com/filecoin-project/rust-fil-proofs/tree/releases/v10.0.0
+[9.0.2]: https://github.com/filecoin-project/rust-fil-proofs/tree/releases/v9.0.2
+[9.0.1]: https://github.com/filecoin-project/rust-fil-proofs/tree/releases/v9.0.1
+[9.0.0]: https://github.com/filecoin-project/rust-fil-proofs/tree/releases/v9.0.0
 [8.0.3]: https://github.com/filecoin-project/rust-fil-proofs/tree/releases/v8.0.3
 [8.0.2]: https://github.com/filecoin-project/rust-fil-proofs/tree/releases/v8.0.2
 [8.0.1]: https://github.com/filecoin-project/rust-fil-proofs/tree/releases/v8.0.1
