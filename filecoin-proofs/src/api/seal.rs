@@ -128,7 +128,7 @@ where
         _,
     >>::setup(&compound_setup_params)?;
 
-    info!("building merkle tree for the original data");
+    info!("building merkle tree for the original data, sector {:?}", sector_id);
     let (config, comm_d) = measure_op(Operation::CommD, || -> Result<_> {
         let base_tree_size = get_base_tree_size::<DefaultBinaryTree>(porep_config.sector_size)?;
         let base_tree_leafs = get_base_tree_leafs::<DefaultBinaryTree>(base_tree_size)?;
@@ -166,7 +166,7 @@ where
         Ok((config, comm_d))
     })?;
 
-    info!("verifying pieces");
+    info!("verifying pieces sector {:id}", sector_id);
 
     ensure!(
         verify_pieces(&comm_d, piece_infos, porep_config.into())?,
@@ -180,6 +180,8 @@ where
         comm_d,
         &porep_config.porep_id,
     );
+
+    info!("seal_pre_commit_phase1: generate replica_id: {:?}", replica_id);
 
     let labels = StackedDrg::<Tree, DefaultPieceHasher>::replicate_phase1(
         &compound_public_params.vanilla_params,

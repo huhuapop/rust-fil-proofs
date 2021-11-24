@@ -1347,7 +1347,7 @@ impl<'a, Tree: 'static + MerkleTreeTrait, G: 'static + Hasher> StackedDrg<'a, Tr
         replica_id: &<Tree::Hasher as Hasher>::Domain,
         config: StoreConfig,
     ) -> Result<Labels<Tree>> {
-        info!("replicate_phase1");
+        info!("replicate_phase1:replica_id {:?}", replica_id);
 
         let labels = measure_op(Operation::EncodeWindowTimeAll, || {
             Self::generate_labels_for_encoding(&pp.graph, &pp.layer_challenges, replica_id, config)
